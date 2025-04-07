@@ -8,15 +8,24 @@ import { formatMessageTime } from "../lib/utils";
 import AvatarImage from "../assets/images/avatar.png";
 
 const ChatContainer = () => {
-  const { messages, getMessages, isMessageLoading, selectedUser } =
-    useChatStore();
+  const {
+    messages,
+    getMessages,
+    isMessageLoading,
+    selectedUser,
+    subscribeToMessages,
+    unsubscribeFromMessages,
+  } = useChatStore();
 
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
 
   useEffect(() => {
     getMessages(selectedUser._id);
-  }, [selectedUser._id, getMessages]);
+    subscribeToMessages();
+
+    return () => unsubscribeFromMessages();
+  }, [selectedUser._id, getMessages,subscribeToMessages,unsubscribeFromMessages]);
 
   useEffect(() => {
     if (messageEndRef.current && messages) {
@@ -66,10 +75,10 @@ const ChatContainer = () => {
 
             <div className="chat-bubble flex flex-col">
               {message.image && (
-                <img 
-                src={message.image}
-                alt="Attachment"
-                className="sm:max-w-[200px] rounded-md mb-2"
+                <img
+                  src={message.image}
+                  alt="Attachment"
+                  className="sm:max-w-[200px] rounded-md mb-2"
                 />
               )}
               {message.text && <p>{message.text}</p>}
@@ -77,7 +86,7 @@ const ChatContainer = () => {
           </div>
         ))}
       </div>
-      <MessageInput/>
+      <MessageInput />
     </div>
   );
 };
