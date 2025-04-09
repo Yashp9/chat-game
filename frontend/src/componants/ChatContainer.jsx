@@ -24,7 +24,7 @@ const ChatContainer = () => {
   const {bgImage} = useThemeStore()
 
   useEffect(() => {
-    getMessages(selectedUser._id);
+    getMessages(selectedUser?._id);
     subscribeToMessages();
 
     return () => unsubscribeFromMessages();
@@ -45,7 +45,6 @@ const ChatContainer = () => {
       </div>
     );
   }
-
   return (
     <div
       className="flex-1 flex flex-col overflow-auto"
@@ -53,7 +52,7 @@ const ChatContainer = () => {
       <ChatHeader />
       <div className="flex-1 overflow-y-auto p-4 space-y-4"
       style={{
-        backgroundImage: `url(${bgImage})`,
+        backgroundImage:bgImage? `url(${bgImage})`:'null',
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}>

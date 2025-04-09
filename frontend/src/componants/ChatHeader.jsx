@@ -5,8 +5,11 @@ import AvatarImage from "../assets/images/avatar.png"
 
 
 const ChatHeader = () => {
-  const { selectedUser, setSelectedUser } = useChatStore();
+  const { selectedUser, setSelectedUser ,isPlaying , setPlaying} = useChatStore();
   const { onlineUsers } = useAuthStore();
+  const handlePlay = () =>{
+    setPlaying();
+  }
 
   return (
     <div className="p-2.5 border-b border-base-300">
@@ -16,8 +19,8 @@ const ChatHeader = () => {
           <div className="avatar">
             <div className="size-10 rounded-full relative">
               <img
-                src={selectedUser.profilePic || AvatarImage}
-                alt={selectedUser.fullName}
+                src={selectedUser?.profilePic || AvatarImage}
+                alt={selectedUser?.fullName}
               />
             </div>
           </div>
@@ -29,6 +32,8 @@ const ChatHeader = () => {
               {onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
             </p>
           </div>
+          {/* play button */}
+          {isPlaying?<button className="btn btn-soft btn-accent"  onClick={handlePlay}>LEAVE</button>:<button className="btn btn-soft btn-accent" onClick={handlePlay}>PLAY</button>}
         </div>
 
         {/* Close button */}

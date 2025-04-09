@@ -9,6 +9,7 @@ export const useChatStore = create((set, get) => ({
   selectedUser: null,
   isUserLoading: false,
   isMessageLoading: false,
+  isPlaying:false,
 
   getUsers: async () => {
     set({ isUserLoading: true });
@@ -25,7 +26,7 @@ export const useChatStore = create((set, get) => ({
   getMessages: async (userId) => {
     set({ isMessageLoading: true });
     try {
-      const res = await axiosInstance.get(`messages/${userId}`);
+      const res = await axiosInstance.get(`/messages/${userId}`);
       set({ messages: res.data });
     } catch (error) {
       toast.error(error.response.data.message);
@@ -36,6 +37,7 @@ export const useChatStore = create((set, get) => ({
 
   sendMessage: async (messageData) => {
     const { messages, selectedUser } = get();
+    console.log("%%%%%%%%%%%%%",messageData);
     try {
       const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`,messageData);
       set({ messages: [...messages, res.data] });
@@ -69,4 +71,9 @@ export const useChatStore = create((set, get) => ({
   setSelectedUser: (selectedUser) => {
     set({ selectedUser });
   },
+
+  // PLAYING
+  setPlaying : () =>{
+    set({isPlaying:!get().isPlaying})
+  }
 }));

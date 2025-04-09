@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 import messageRoutes from "./routes/message.route.js";
 import cors from "cors";
 import { app,server } from './lib/socket.js';
+import gameRouter from "./routes/game.route.js";
 
 
 dotenv.config()
@@ -21,6 +22,7 @@ app.use(cors({
 
 app.use('/api/auth',authRoutes);
 app.use('/api/messages',messageRoutes);
+app.use('/api/game',gameRouter)
 
 server.listen(PORT,()=>{
     console.log("server is running on port 5001 http://localhost:"+PORT)
