@@ -12,7 +12,7 @@ const AnswerInput = () => {
   const handleSendAnswer = async (e) => {
     e.preventDefault();
     if (!text.trim()) return;
-    console.log("xxxxxxxxxxxxxxxxxx",text);
+    console.log("xxxxxxxxxxxxxxxxxx", text);
 
     try {
       //send answer via gameStore.
@@ -28,27 +28,29 @@ const AnswerInput = () => {
   };
 
   return (
-    <form onSubmit={handleSendAnswer} className="flex items-center gap-2">
-      <div className="flex-1 flex gap-2">
-        {/* Text input */}
-        <input
-          type="text"
-          className="w-full input input-bordered rounded-lg input-sm sm:input-md"
-          placeholder="Type a message..."
-          value={text}
-          onChange={(e) => setText(e.target.value)} // Update text state
-        />
-      </div>
+    <div className="p-4 w-full">
+      <form onSubmit={handleSendAnswer} className="flex items-center gap-2">
+        <div className="flex-1 flex gap-2">
+          {/* Text input */}
+          <input
+            type="text"
+            className="w-full input input-bordered rounded-lg input-sm sm:input-md"
+            placeholder="Type a message..."
+            value={text}
+            onChange={(e) => setText(e.target.value)} // Update text state
+          />
+        </div>
 
-      {/* Send button - disabled if no text or image */}
-      <button
-        type="submit"
-        className="btn btn-sm btn-circle"
-        disabled={!text.trim()}
-      >
-        <Send size={22} />
-      </button>
-    </form>
+        {/* Send button - disabled if no text or image */}
+        <button
+          type="submit"
+          className="btn btn-sm btn-circle"
+          disabled={!text.trim()}
+        >
+          <Send size={22} />
+        </button>
+      </form>
+    </div>
   );
 };
 

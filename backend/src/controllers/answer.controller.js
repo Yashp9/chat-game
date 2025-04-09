@@ -28,7 +28,7 @@ export const sendAnswer = async(req,res) =>{
     try {
         const{text} = req.body;
         const {id:receiverId} = req.params;
-        const {senderId} = req.user._id;
+        const senderId = req.user._id;
 
         const newAnswer = new Answer({
             senderId,
@@ -36,8 +36,8 @@ export const sendAnswer = async(req,res) =>{
             text,
         })
 
-        res.status(201).json(newAnswer);
         await newAnswer.save();
+        res.status(201).json(newAnswer);
     } catch (error) {
         console.log("Error in sendAnswer controller : ",error.message);
         res.status(500).json({error:"Internal server error"});

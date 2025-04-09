@@ -13,8 +13,13 @@ import AnswerInput from "./AnswerInput";
 const Playmode = () => {
   const messageEndRef = useRef(null);
   const { bgImage } = useThemeStore();
-  const { answers, selectedUser, isUserLoading, isAnswerLoading, isPlaying } =
+  const { authUser } = useAuthStore();
+  const {selectedUser}=useChatStore();
+  const { answers, getAnswer,isUserLoading, isAnswerLoading, isPlaying } =
     useGameStore();
+    useEffect(()=>{
+        getAnswer(selectedUser._id);
+    },[getAnswer])
 
   return (
     <div className="flex-1 flex flex-col overflow-auto">
@@ -60,7 +65,7 @@ const Playmode = () => {
           </div>
         ))}
       </div>
-      <AnswerInput/>
+      <AnswerInput />
     </div>
   );
 };

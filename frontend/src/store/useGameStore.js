@@ -11,27 +11,37 @@ export const useGameStore = create((set, get) => ({
   isAnswerLoading: false,
   isPlaying: false,
 
-  getAnswer:async (userId) =>{
-    set({isAnswerLoading:true});
+  getAnswer: async (userId) => {
+    set({ isAnswerLoading: true });
     try {
-        const res = await axiosInstance.get(`/game/${userId}`);
-        set({answers:res.data});
+      const res = await axiosInstance.get(`/game/${userId}`);
+      set({ answers: res.data });
     } catch (error) {
-        toast.error(error.response.data.message);
-    }
-
-    finally{
-        set({isAnswerLoading:false});
+      toast.error(error?.message);
+    } finally {
+      set({ isAnswerLoading: false });
     }
   },
 
-  sendAnswer:async (answerData) =>{
-    const {selectedUser} = get();
-    try {
-        const res = await axiosInstance.post(`/game/send/${selectedUser._id}`,answerData);
-        set({answers:[...answers,res.data]});
-    } catch (error) {
-        toast.error(error.response.data.message);
+  sendAnswer: async (answerData) => {
+    const selectedUser = useChatStore.getState().selectedUser;
+    const { answers } = get();
+
+    if (!selectedUser) {
+      toast.error("No user selected");
+      return;
     }
-  }
+
+    try {
+      console.log("Selected User:", selectedUser._id);
+      const res = await axiosInstance.post(
+        `/game/send/${selectedUser._id}`,
+        answerData
+      );
+      set({ answers: [...answers, res.data] });
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.message || "Something went wrong");
+    }
+  },
 }));
