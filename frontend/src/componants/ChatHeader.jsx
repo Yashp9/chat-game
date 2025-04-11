@@ -7,6 +7,9 @@ import AvatarImage from "../assets/images/avatar.png"
 const ChatHeader = () => {
   const { selectedUser, setSelectedUser ,isPlaying , setPlaying} = useChatStore();
   const { onlineUsers } = useAuthStore();
+  const handlePlay = () =>{
+    setPlaying();
+  }
 
 
   return (
@@ -31,7 +34,11 @@ const ChatHeader = () => {
             </p>
           </div>
           {/* play button */}
+<<<<<<< HEAD
           {/* {isPlaying?<button className="btn btn-soft btn-accent"  onClick={handlePlay}>LEAVE</button>:<button className="btn btn-soft btn-accent" onClick={handlePlay}>PLAY</button>} */}
+=======
+          {isPlaying?<button className="btn btn-soft btn-accent"  onClick={handlePlay}>LEAVE</button>:<button className="btn btn-soft btn-accent" onClick={handlePlay}>PLAY</button>}
+>>>>>>> 3230100dc9fab13caf4b1ee336a2e01369c86726
         </div>
 
         {/* Close button */}
