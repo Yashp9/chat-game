@@ -4,7 +4,7 @@ import NoChatSelected from "../componants/NoChatSelected";
 import ChatContainer from "../componants/ChatContainer";
 
 const HomePage = () => {
-  const { selectedUser } = useChatStore();
+  const { selectedUser , isPlaying} = useChatStore();
 
   return (
     <div className="h-screen bg-base-200">
