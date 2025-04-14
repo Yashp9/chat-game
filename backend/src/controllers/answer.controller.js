@@ -26,7 +26,7 @@ export const getAnswer = async (req,res) =>{
 
 export const sendAnswer = async(req,res) =>{
     try {
-        const{text} = req.body;
+       const{text} = req.body;
         const {id:receiverId} = req.params;
         const senderId = req.user._id;
 
@@ -37,6 +37,14 @@ export const sendAnswer = async(req,res) =>{
         })
 
         await newAnswer.save();
+        console.log("inside backend answer controller =  checking the send answer")
+        //implement the socket.io part for answers;
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if(receiverId){
+            console.log("checkiing backend socket io call")
+            io.to(receiverSocketId).emit("newAnswer",newAnswer);
+            console.log("emitted to ",receiverSocketId)
+        }
         res.status(201).json(newAnswer);
     } catch (error) {
         console.log("Error in sendAnswer controller : ",error.message);

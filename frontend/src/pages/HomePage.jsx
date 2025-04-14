@@ -2,10 +2,10 @@ import { useChatStore } from "../store/useChatStore";
 import Sidebar from "../componants/Sidebar";
 import NoChatSelected from "../componants/NoChatSelected";
 import ChatContainer from "../componants/ChatContainer";
-import Playmode from "../componants/Playmode";
+
 
 const HomePage = () => {
-  const { selectedUser , isPlaying} = useChatStore();
+  const { selectedUser } = useChatStore();
 
   return (
     <div className="h-screen bg-base-200">
@@ -14,7 +14,7 @@ const HomePage = () => {
           <div className="flex h-full rounded-lg overflow-hidden">
             <Sidebar />
 
-            {!selectedUser ? <NoChatSelected /> : isPlaying?<Playmode/>:<ChatContainer />}
+            {!selectedUser ? <NoChatSelected /> :<ChatContainer />}
           </div>
         </div>
       </div>

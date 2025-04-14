@@ -44,4 +44,28 @@ export const useGameStore = create((set, get) => ({
       toast.error(error?.message || "Something went wrong");
     }
   },
+
+  subscribeToAnswer : () =>{
+    console.log("hotaaaaaaaaaaaaaaaa");
+    const selectedUser = useChatStore.getState().selectedUser;
+    if(!selectedUser) return;
+
+    const socket = useAuthStore.getState().socket;
+
+    socket.on("newAnswer",(newAnswer)=>{
+      const isAnswerSentFromSelectedUser = newAnswer.senderId === selectedUser._id;
+      console.log("hotaaaaaaaaaaaaaaaa");
+      if(!isAnswerSentFromSelectedUser) return;
+      console.log("lotaaaaaaaaaaaaaaaa");
+
+      set({
+        answers:[...get().answers,newAnswer],
+      })
+    })
+  },
+  unsubscribeToAnswer:(selectedUser)=>{
+    const socket = useAuthStore.getState().socket;
+    socket.off("newAnswer");
+  },
+  
 }));
