@@ -1,19 +1,17 @@
 import { X } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
-import AvatarImage from "../assets/images/avatar.png"
+import AvatarImage from "../assets/images/avatar.png";
 import { Link } from "react-router-dom";
 import { useGameStore } from "../store/useGameStore";
 
-
 const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
-  const { onlineUsers } = useAuthStore();
-  const {sendNotification} = useGameStore();
-  const handlePlay = () =>{
-    sendNotification();
-  }
-  
+  const { onlineUsers, socket } = useAuthStore();
+  const { sendNotification } = useGameStore();
+  const handlePlay = () => {
+    sendNotification(selectedUser);
+  };
 
   return (
     <div className="p-2.5 border-b border-base-300">
@@ -37,10 +35,10 @@ const ChatHeader = () => {
             </p>
           </div>
         </div>
-          <Link to={"/tictactoe"}>
-          <button className="btn btn-soft btn-accent"    onClick={handlePlay}>Play</button>
-          </Link>
-        
+        <button className="btn btn-soft btn-accent" onClick={handlePlay}>
+          Play
+        </button>
+
         {/* Close button */}
         <button onClick={() => setSelectedUser(null)}>
           <X />

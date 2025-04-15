@@ -19,7 +19,7 @@ import { useGameStore } from "./store/useGameStore";
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
   const { theme } = useThemeStore();
-  const { notification} = useGameStore();
+  const { notification,isReadyToPlay} = useGameStore();
   useEffect(() => {
     checkAuth();
   }, [checkAuth,notification]);
@@ -56,7 +56,7 @@ const App = () => {
           element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
         />
         <Route path="/settings" element={<SettingPage />} />
-        <Route path="/tictactoe" element={<TicTacToe />} />
+        <Route path="/tictactoe" element={isReadyToPlay ? <TicTacToe />:<Navigate to="/" />} />
       </Routes>
       <Toaster />
     </div>

@@ -1,20 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore } from "../../store/useGameStore";
+import { useNavigate } from "react-router-dom";
 
 const GameInviteNotification = ({ username, onAccept, onReject }) => {
   const [show, setShow] = useState(true);
-  const {setNotification} = useGameStore();
+  const navigate = useNavigate();
+  const {setNotification,sendNotificationResponse,setIsReadyToPlay,isReadyToPlay} = useGameStore();
 
   const handleAccept = () => {
     // onAccept();         // Your socket emit logic or redirect here
     setNotification(false);    // Hide notification
+    sendNotificationResponse("accept");
+    setIsReadyToPlay(true);
+    navigate("tictactoe");
   };
 
   const handleReject = () => {
     // onReject();         // Your socket emit or cleanup logic here
     setNotification(false);     // Hide notification
+    sendNotificationResponse("reject");
   };
+ 
 
   return (
     <AnimatePresence>

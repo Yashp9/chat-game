@@ -5,22 +5,63 @@ import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import { Users } from "lucide-react";
 import AvatarImage from "../assets/images/avatar.png";
 import { useGameStore } from "../store/useGameStore";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
-  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } =
-    useChatStore();
-
-  const { onlineUsers } = useAuthStore();
+  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
+  const { onlineUsers, socket } = useAuthStore();
+  const navigate = useNavigate();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
-  const { getNotification } = useGameStore();
+  const { setNotificationSenderPlayer, setNotification,setIsReadyToPlay,isReadyToPlay } = useGameStore();
+
+  // Fetch users whenever component mounts or onlineUsers change
   useEffect(() => {
     getUsers();
-  }, [getUsers]);
-  
-  useEffect(()=>{
-    getNotification();
-  },[onlineUsers,getNotification])
+  }, [getUsers, onlineUsers]);
 
+  // Listen for game request response
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleResponse = (notificationResponse) => {
+      console.log("get response__to__request", notificationResponse);
+      if (notificationResponse.notificationResponse === "accept") {
+        setIsReadyToPlay(true);
+        navigate("tictactoe");
+      }
+    };
+
+    socket.on("response_to_request", handleResponse);
+
+    return () => {
+      socket.off("response_to_request", handleResponse);
+    };
+  }, [socket]);
+
+  // Listen for incoming game requests
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleSendRequest = ({ senderPlayerInfo }) => {
+      setNotification(true);
+      setNotificationSenderPlayer(senderPlayerInfo);
+    };
+
+    socket.on("send_request", handleSendRequest);
+
+    return () => {
+      socket.off("send_request", handleSendRequest);
+    };
+  }, [socket]);
+
+  // Navigate when game is ready
+  // useEffect(() => {
+  //   if (isReadyToPlay) {
+  //     navigate("/tictactoe");
+  //   }
+  // }, [isReadyToPlay]);
+
+  // Filter users based on online toggle
   const filteredUsers = showOnlineOnly
     ? users.filter((user) => onlineUsers.includes(user._id))
     : users;
@@ -34,7 +75,6 @@ const Sidebar = () => {
           <Users className="size-6" />
           <span className="font-medium hidden lg:block">Contacts</span>
         </div>
-        {/* TODO: Online filter toggle */}
         <div className="mt-3 hidden lg:flex items-center gap-2">
           <label className="cursor-pointer flex items-center gap-2">
             <input
@@ -59,11 +99,7 @@ const Sidebar = () => {
             className={`
               w-full p-3 flex items-center gap-3
               hover:bg-base-300 transition-colors
-              ${
-                selectedUser?._id === user._id
-                  ? "bg-base-300 ring-1 ring-base-300"
-                  : ""
-              }
+              ${selectedUser?._id === user._id ? "bg-base-300 ring-1 ring-base-300" : ""}
             `}
           >
             <div className="relative mx-auto lg:mx-0">
@@ -80,7 +116,6 @@ const Sidebar = () => {
               )}
             </div>
 
-            {/* User info - only visible on larger screens */}
             <div className="hidden lg:block text-left min-w-0">
               <div className="font-medium truncate">{user.fullName}</div>
               <div className="text-sm text-zinc-400">
@@ -97,4 +132,5 @@ const Sidebar = () => {
     </aside>
   );
 };
+
 export default Sidebar;

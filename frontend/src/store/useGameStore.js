@@ -4,25 +4,45 @@ import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "./useAuthStore";
 import { useChatStore } from "./useChatStore";
 
-export const useGameStore = create((set,get)=>({
-  notification:false,
+export const useGameStore = create((set, get) => ({
+  notification: false,
+  notificationSenderPlayer:null,
+  isReadyToPlay:false,
 
-  sendNotification:async()=>{
-    const selectedUser = useChatStore.getState().selectedUser;
+
+  setIsReadyToPlay: (value) => set({ isReadyToPlay: value }),
+  // Send game request notification to selected user
+  sendNotification: async (selectedUser) => {
+  
     try {
-      const res = await axiosInstance.get(`/game/game_req/${selectedUser._id}`);
+      await axiosInstance.get(`/game/game_req/${selectedUser._id}`);
     } catch (error) {
-      console.log("error in sendNotification ",error)
+      console.log("error in sendNotification", error);
     }
   },
-  getNotification: async()=>{
-    const socket = useAuthStore.getState().socket;
-    socket.on("send_request",()=>{
-      set({notification:true})
-      console.log("cameeeeeeeeeeeee",socket)
-    })
+
+  setNotificationSenderPlayer:(data)=>{
+    set({notificationSenderPlayer:data})
   },
-  setNotification:(bool)=>{
-    set({notification:bool});
-  }
-}))
+
+  
+
+  // Manually set notification state
+  setNotification: (bool) => {
+    set({ notification: bool });
+  },
+
+  // Respond to game request (accept/reject)
+  sendNotificationResponse: async (data) => {
+    const socket = useAuthStore.getState().socket;
+    try {
+      await axiosInstance.get(`/game/game_res/${get().notificationSenderPlayer._id}`, {
+        params: {
+          notificationResponse: data, // Example: { accepted: true }
+        },
+      });
+    } catch (error) {
+      console.log("error in sendNotificationResponse", error);
+    }
+  },
+}));
