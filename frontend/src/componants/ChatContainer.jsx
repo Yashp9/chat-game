@@ -7,6 +7,7 @@ import { useAuthStore } from "../store/useAuthStore";
 import { formatMessageTime } from "../lib/utils";
 import AvatarImage from "../assets/images/avatar.png";
 import { useThemeStore } from "../store/useThemeStore";
+import { useGameStore } from "../store/useGameStore";
 
 
 const ChatContainer = () => {
@@ -18,6 +19,8 @@ const ChatContainer = () => {
     subscribeToMessages,
     unsubscribeFromMessages,
   } = useChatStore();
+
+ 
 
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);

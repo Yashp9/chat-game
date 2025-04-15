@@ -76,3 +76,19 @@ export const useChatStore = create((set, get) => ({
     set({isPlaying:!get().isPlaying})
   }
 }));
+
+
+
+
+
+
+
+
+
+
+
+// socket.emit("send_request", {
+//   senderId: A_id,
+//   receiverId: B_id,
+//   type: "game_request"
+// });

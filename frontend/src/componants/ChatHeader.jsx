@@ -2,14 +2,18 @@ import { X } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
 import AvatarImage from "../assets/images/avatar.png"
+import { Link } from "react-router-dom";
+import { useGameStore } from "../store/useGameStore";
 
 
 const ChatHeader = () => {
-  const { selectedUser, setSelectedUser ,isPlaying , setPlaying} = useChatStore();
+  const { selectedUser, setSelectedUser } = useChatStore();
   const { onlineUsers } = useAuthStore();
+  const {sendNotification} = useGameStore();
   const handlePlay = () =>{
-    setPlaying();
+    sendNotification();
   }
+  
 
   return (
     <div className="p-2.5 border-b border-base-300">
@@ -19,8 +23,8 @@ const ChatHeader = () => {
           <div className="avatar">
             <div className="size-10 rounded-full relative">
               <img
-                src={selectedUser?.profilePic || AvatarImage}
-                alt={selectedUser?.fullName}
+                src={selectedUser.profilePic || AvatarImage}
+                alt={selectedUser.fullName}
               />
             </div>
           </div>
@@ -32,10 +36,11 @@ const ChatHeader = () => {
               {onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
             </p>
           </div>
-          {/* play button */}
-          {isPlaying?<button className="btn btn-soft btn-accent"  onClick={handlePlay}>LEAVE</button>:<button className="btn btn-soft btn-accent" onClick={handlePlay}>PLAY</button>}
         </div>
-
+          <Link to={"/tictactoe"}>
+          <button className="btn btn-soft btn-accent"    onClick={handlePlay}>Play</button>
+          </Link>
+        
         {/* Close button */}
         <button onClick={() => setSelectedUser(null)}>
           <X />

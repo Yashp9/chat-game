@@ -11,13 +11,18 @@ import { useEffect } from "react";
 import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 import { useThemeStore } from "./store/useThemeStore";
+import TicTacToe from "./componants/TicTacToe";
+import GameInviteNotification from "./componants/gameComponants/notification";
+import { useGameStore } from "./store/useGameStore";
+
 
 const App = () => {
-  const { authUser, checkAuth, isCheckingAuth ,onlineUsers} = useAuthStore();
+  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
   const { theme } = useThemeStore();
+  const { notification} = useGameStore();
   useEffect(() => {
     checkAuth();
-  }, [checkAuth]);
+  }, [checkAuth,notification]);
 
   if (isCheckingAuth && !authUser) {
     return (
@@ -30,6 +35,9 @@ const App = () => {
   return (
     <div data-theme={theme}>
       <Navbar />
+      {/* Notification Component */}
+      {notification && <GameInviteNotification />}
+
       <Routes>
         <Route
           path="/"
@@ -48,6 +56,7 @@ const App = () => {
           element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
         />
         <Route path="/settings" element={<SettingPage />} />
+        <Route path="/tictactoe" element={<TicTacToe />} />
       </Routes>
       <Toaster />
     </div>
