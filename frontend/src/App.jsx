@@ -17,7 +17,7 @@ import { useGameStore } from "./store/useGameStore";
 
 
 const App = () => {
-  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
+  const { authUser, checkAuth, isCheckingAuth, onlineUsers} = useAuthStore();
   const { theme } = useThemeStore();
   const { notification,isReadyToPlay} = useGameStore();
   useEffect(() => {

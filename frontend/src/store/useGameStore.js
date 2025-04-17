@@ -1,8 +1,6 @@
 import { create } from "zustand";
-import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "./useAuthStore";
-import { useChatStore } from "./useChatStore";
 
 export const useGameStore = create((set, get) => ({
   notification: false,
@@ -12,8 +10,7 @@ export const useGameStore = create((set, get) => ({
 
   setIsReadyToPlay: (value) => set({ isReadyToPlay: value }),
   // Send game request notification to selected user
-  sendNotification: async (selectedUser) => {
-  
+  sendNotification: async (selectedUser) => { 
     try {
       await axiosInstance.get(`/game/game_req/${selectedUser._id}`);
     } catch (error) {
@@ -34,11 +31,13 @@ export const useGameStore = create((set, get) => ({
 
   // Respond to game request (accept/reject)
   sendNotificationResponse: async (data) => {
+    console.log("came to send Notification response :-----------")
     const socket = useAuthStore.getState().socket;
     try {
       await axiosInstance.get(`/game/game_res/${get().notificationSenderPlayer._id}`, {
         params: {
           notificationResponse: data, // Example: { accepted: true }
+          res_to_req_sender:useAuthStore.getState().authUser._id, //sending authuserId so that backend can send joinroom request back to him.
         },
       });
     } catch (error) {

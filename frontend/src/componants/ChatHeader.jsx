@@ -4,6 +4,7 @@ import { useChatStore } from "../store/useChatStore";
 import AvatarImage from "../assets/images/avatar.png";
 import { Link } from "react-router-dom";
 import { useGameStore } from "../store/useGameStore";
+import toast from "react-hot-toast";
 
 const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
@@ -11,6 +12,7 @@ const ChatHeader = () => {
   const { sendNotification } = useGameStore();
   const handlePlay = () => {
     sendNotification(selectedUser);
+    toast.success("Request Send");
   };
 
   return (

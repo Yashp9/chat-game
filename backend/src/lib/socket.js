@@ -28,6 +28,10 @@ io.on("connection", (socket) => {
 
   //it is emitted to each forntend bcz every one needs to know the online users detail.
   io.emit("getOnlineUsers",Object.keys(userSocketMap))
+  socket.on("join_game_room",(roomId)=>{
+    socket.join(roomId);
+    console.log(`Socket ${socket.id} joined room ${roomId}`);
+  })
 
   socket.on("disconnect", () => {
     console.log("A user disconnected", socket.id);

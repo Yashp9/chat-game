@@ -6,6 +6,8 @@ import { Users } from "lucide-react";
 import AvatarImage from "../assets/images/avatar.png";
 import { useGameStore } from "../store/useGameStore";
 import { useNavigate } from "react-router-dom";
+import useGameSocketListeners from "../hooks/useGameSocketListener";
+import toast from "react-hot-toast";
 
 const Sidebar = () => {
   const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
@@ -18,50 +20,9 @@ const Sidebar = () => {
   useEffect(() => {
     getUsers();
   }, [getUsers, onlineUsers]);
+  useGameSocketListeners();
 
-  // Listen for game request response
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleResponse = (notificationResponse) => {
-      console.log("get response__to__request", notificationResponse);
-      if (notificationResponse.notificationResponse === "accept") {
-        setIsReadyToPlay(true);
-        navigate("tictactoe");
-      }
-    };
-
-    socket.on("response_to_request", handleResponse);
-
-    return () => {
-      socket.off("response_to_request", handleResponse);
-    };
-  }, [socket]);
-
-  // Listen for incoming game requests
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleSendRequest = ({ senderPlayerInfo }) => {
-      setNotification(true);
-      setNotificationSenderPlayer(senderPlayerInfo);
-    };
-
-    socket.on("send_request", handleSendRequest);
-
-    return () => {
-      socket.off("send_request", handleSendRequest);
-    };
-  }, [socket]);
-
-  // Navigate when game is ready
-  // useEffect(() => {
-  //   if (isReadyToPlay) {
-  //     navigate("/tictactoe");
-  //   }
-  // }, [isReadyToPlay]);
-
-  // Filter users based on online toggle
+  
   const filteredUsers = showOnlineOnly
     ? users.filter((user) => onlineUsers.includes(user._id))
     : users;
