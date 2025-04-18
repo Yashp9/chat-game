@@ -3,16 +3,19 @@ import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 import { LogOut, MessageSquare, Settings, User } from "lucide-react";
 import { useThemeStore } from "../store/useThemeStore";
+import { usePlayStore } from "../store/usePlayStore";
 
 const Navbar = () => {
   const { logout, authUser, socket } = useAuthStore();
   const { theme } = useThemeStore();
+  const {setRoomId} = usePlayStore();
 
   useEffect(() => {
     if(!socket) return //if socket is not ready , skip.
     // Start game: join the room
     const handleStartGame = ({ roomId }) => {
       socket.emit("join_game_room", roomId);
+      setRoomId(roomId);
     };
 
     socket.on("start_game", handleStartGame);
@@ -20,7 +23,7 @@ const Navbar = () => {
     return () => {
       socket.off("start_game", handleStartGame);
     };
-  });
+  },[socket]);
 
   return (
     <header
