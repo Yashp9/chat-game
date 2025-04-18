@@ -118,6 +118,13 @@ io.on("connection", (socket) => {
       nextTurn:currentTurn,
     });
   });
+  
+    //------------------------ player left  ----------------------
+
+  socket.on("player-left-game",(roomId)=>{
+    io.to(roomId).emit("player_left")
+  })
+  
 
   //------------------------ DISSCONNECT ----------------------
 

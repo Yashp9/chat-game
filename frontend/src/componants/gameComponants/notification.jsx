@@ -14,6 +14,7 @@ const GameInviteNotification = () => {
     isReadyToPlay,
     notificationSenderPlayer,
   } = useGameStore();
+  
 
   useEffect(() => {
     const duration = 8000;

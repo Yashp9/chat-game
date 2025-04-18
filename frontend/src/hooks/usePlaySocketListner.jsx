@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { usePlayStore } from "../store/usePlayStore";
+import { useGameStore } from "../store/useGameStore";
+import toast from "react-hot-toast";
 
 export const usePlaySocketListner = () => {
   const { socket } = useAuthStore();
@@ -14,6 +16,7 @@ export const usePlaySocketListner = () => {
     roomId,
     setSocket,
   } = usePlayStore();
+  const {setIsReadyToPlay} = useGameStore();
 
   useEffect(() => {
     if (!socket) return;
@@ -77,10 +80,18 @@ export const usePlaySocketListner = () => {
         nextTurn === symbol
       );
     });
+    socket.on("player_left",()=>{
+      toast.error("Player Left");
+      setTimeout(()=>{
+        setIsReadyToPlay(false)
+      },700)
+
+    })
 
     return () => {
       socket.off("assign_symbol");
       socket.off("move_made");
+      socket.off("player_left");
     };
   }, [socket, symbol]);
 

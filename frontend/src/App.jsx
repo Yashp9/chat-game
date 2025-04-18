@@ -14,12 +14,14 @@ import { useThemeStore } from "./store/useThemeStore";
 import TicTacToe from "./componants/TicTacToe";
 import GameInviteNotification from "./componants/gameComponants/notification";
 import { useGameStore } from "./store/useGameStore";
+import useCheckIsPlaying from "./hooks/useCheckIsPlaying";
 
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth, onlineUsers} = useAuthStore();
   const { theme } = useThemeStore();
   const { notification,isReadyToPlay} = useGameStore();
+  useCheckIsPlaying()
   useEffect(() => {
     checkAuth();
   }, [checkAuth,notification]);

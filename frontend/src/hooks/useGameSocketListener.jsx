@@ -12,6 +12,8 @@ const useGameSocketListeners = () => {
     setNotification,
     setNotificationSenderPlayer,
     setIsReadyToPlay,
+    isReadyToPlay,
+    sendNotificationResponse
   } = useGameStore();
 
   useEffect(() => {
@@ -19,12 +21,20 @@ const useGameSocketListeners = () => {
 
     // Incoming game request from another player
     const handleSendRequest = ({ senderPlayerInfo }) => {
+      console.log("inside handle send request")
+      if(isReadyToPlay){
+        sendNotificationResponse("inMatch")
+      }
       setNotification(true);
       setNotificationSenderPlayer(senderPlayerInfo);
     };
 
     // Response to game request (accept/reject)
     const handleResponse = (notificationResponse) => {
+      if (notificationResponse.notificationResponse === "inMatch") {
+        toast.error("PLAYING WITH OTHER PERSON");
+      }
+
       if (notificationResponse.notificationResponse === "accept") {
         setIsReadyToPlay(true);
         navigate("/tictactoe"); // or just "tictactoe"
