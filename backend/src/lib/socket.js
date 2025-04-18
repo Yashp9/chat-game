@@ -71,7 +71,7 @@ io.on("connection", (socket) => {
 
   // ---------------------- MAKE MOVE --------------------
 
-  socket.on("make_move", ({ roomId,index,symbol}) => {
+  socket.on("make_move", ({ roomId,index,symbol,winner}) => {
     console.log(`inside make_move listener roomId = ${roomId} index = ${index} symbol = ${symbol}`);
     const game =  gameRooms.get(roomId);
     if(!game) return;
@@ -100,6 +100,7 @@ io.on("connection", (socket) => {
     io.to(roomId).emit("move_made",{
       board,
       nextTurn,
+      winner,
     });
   });
 
@@ -108,6 +109,7 @@ io.on("connection", (socket) => {
   socket.on("reset_game",({roomId})=>{
     const board = Array(9).fill(null);
     const currentTurn = "X";
+    io.to(roomId).emit("winner_update");
 
     gameRooms.set(roomId,{board,currentTurn});
 

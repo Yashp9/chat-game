@@ -19,7 +19,10 @@ const TicTacToe = () => {
   usePlaySocketListner(); // Starts all listeners like move_made, restart etc.
 
   const handleClick = (index) => {
-    if (board[index] || winner || !isMyTurn) return;
+    if (board[index] || winner || !isMyTurn) {
+      console.log("get stuckk in handle click")
+      return;
+    };
     console.log("make move emitted ")
 
     // ✅ Emit the move using the correct event name

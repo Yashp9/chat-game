@@ -61,7 +61,9 @@ export const usePlaySocketListner = () => {
         setWinner(result);
         console.log("🏆 Winner is:", result);
         console.log("trigredddddddddddddddddddddddddd")
-        socket.emit("reset_game",({roomId}))
+        setTimeout(()=>{
+            socket.emit("reset_game",({roomId}))
+        },3000)
       } else {
         nextTurn === symbol ? setIsMyTurn(true) : setIsMyTurn(false);
       }
@@ -92,4 +94,13 @@ export const usePlaySocketListner = () => {
 
     return () => unsub();
   }, []);
+  useEffect(()=>{
+    socket.on("winner_update",()=>{
+        setWinner(null);
+    })
+
+    return () =>{
+        socket.off("winner_update");
+    }
+  },[])
 };
