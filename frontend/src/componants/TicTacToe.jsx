@@ -2,6 +2,10 @@ import React from "react";
 import { usePlaySocketListner } from "../hooks/usePlaySocketListner";
 import { usePlayStore } from "../store/usePlayStore";
 import { useAuthStore } from "../store/useAuthStore";
+import { useState } from "react";
+import Confetti from "react-confetti";
+import { useEffect } from "react";
+
 
 const TicTacToe = () => {
   const {
@@ -15,6 +19,16 @@ const TicTacToe = () => {
     roomId,
   } = usePlayStore();
   const {socket} = useAuthStore();
+  const [confetti,setConfetti] = useState(false);
+
+  useEffect(() => {
+    if (winner) {
+      setConfetti(true);
+    }
+    setTimeout(() => {
+      setConfetti(false);
+    },3000);
+  }, [winner]);
 
   usePlaySocketListner(); // Starts all listeners like move_made, restart etc.
 
@@ -71,6 +85,14 @@ const TicTacToe = () => {
       <h1 className="text-4xl font-bold mb-6 bg-pink-600 rounded-lg px-2 py-2 pt-2">
         Tic Tac Toe
       </h1>
+      {confetti && <Confetti
+                width={window.innerWidth}
+                height={window.innerHeight}
+                gravity={0.6}
+                style={{ zIndex: 99 }}
+                numberOfPieces={700}
+                recycle={false}
+        />}
 
       <div className="grid grid-cols-3 gap-3 mb-6 p-4 rounded-2xl bg-[#EDFAD7] shadow-lg shadow-purple-700">
         {board.map((_, idx) => renderCell(idx))}
