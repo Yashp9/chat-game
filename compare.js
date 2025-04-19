@@ -233,127 +233,250 @@
 
 
 
-import { Server } from "socket.io";
-import http from "http";
-import express from "express";
+// import { Server } from "socket.io";
+// import http from "http";
+// import express from "express";
 
-const app = express();
-const server = http.createServer(app);
+// const app = express();
+// const server = http.createServer(app);
 
-// Socket.io setup with CORS for frontend
-const io = new Server(server, {
-  cors: {
-    origin: ["http://localhost:5173"], // your frontend URL
-  },
-});
+// // Socket.io setup with CORS for frontend
+// const io = new Server(server, {
+//   cors: {
+//     origin: ["http://localhost:5173"], // your frontend URL
+//   },
+// });
 
-// Track userId to socketId mappings
-const userSocketMap = {};
+// // Track userId to socketId mappings
+// const userSocketMap = {};
 
-// Game state for each room: { roomId: { board, currentTurn } }
-const gameRooms = new Map();
+// // Game state for each room: { roomId: { board, currentTurn } }
+// const gameRooms = new Map();
 
-export function getReceiverSocketId(userId) {
-  return userSocketMap[userId];
-}
+// export function getReceiverSocketId(userId) {
+//   return userSocketMap[userId];
+// }
 
-io.on("connection", (socket) => {
-  console.log("A user connected:", socket.id);
+// io.on("connection", (socket) => {
+//   console.log("A user connected:", socket.id);
 
-  const userId = socket.handshake.query.userId;
-  if (userId) {
-    userSocketMap[userId] = socket.id;
-  }
+//   const userId = socket.handshake.query.userId;
+//   if (userId) {
+//     userSocketMap[userId] = socket.id;
+//   }
 
-  // Send updated online users to everyone
-  io.emit("getOnlineUsers", Object.keys(userSocketMap));
+//   // Send updated online users to everyone
+//   io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-  // ------------------ JOIN GAME ROOM ------------------
-  socket.on("join_game", ({ roomId }) => {
-    socket.join(roomId);
+//   // ------------------ JOIN GAME ROOM ------------------
+//   socket.on("join_game", ({ roomId }) => {
+//     socket.join(roomId);
 
-    const room = io.sockets.adapter.rooms.get(roomId);
-    const players = Array.from(room);
+//     const room = io.sockets.adapter.rooms.get(roomId);
+//     const players = Array.from(room);
 
-    console.log(`Socket ${socket.id} joined room ${roomId}`);
+//     console.log(`Socket ${socket.id} joined room ${roomId}`);
 
-    if (players.length === 2) {
-      const [playerX, playerO] = players;
+//     if (players.length === 2) {
+//       const [playerX, playerO] = players;
 
-      // Assign player symbols
-      io.to(playerX).emit("assign_symbol", { symbol: "X", turn: true });
-      io.to(playerO).emit("assign_symbol", { symbol: "O", turn: false });
+//       // Assign player symbols
+//       io.to(playerX).emit("assign_symbol", { symbol: "X", turn: true });
+//       io.to(playerO).emit("assign_symbol", { symbol: "O", turn: false });
 
-      // Create game board for this room
-      const board = Array(9).fill(null);
-      const currentTurn = "X";
+//       // Create game board for this room
+//       const board = Array(9).fill(null);
+//       const currentTurn = "X";
 
-      // Save to gameRooms Map
-      gameRooms.set(roomId, { board, currentTurn });
+//       // Save to gameRooms Map
+//       gameRooms.set(roomId, { board, currentTurn });
 
-      // Notify both players game started
-      io.to(roomId).emit("move_made", {
-        board,
-        nextTurn: currentTurn,
-      });
-    }
-  });
+//       // Notify both players game started
+//       io.to(roomId).emit("move_made", {
+//         board,
+//         nextTurn: currentTurn,
+//       });
+//     }
+//   });
 
-  // ------------------ MAKE A MOVE ------------------
-  socket.on("make_move", ({ roomId, index, symbol }) => {
-    const game = gameRooms.get(roomId);
-    if (!game) return;
+//   // ------------------ MAKE A MOVE ------------------
+//   socket.on("make_move", ({ roomId, index, symbol }) => {
+//     const game = gameRooms.get(roomId);
+//     if (!game) return;
 
-    const { board, currentTurn } = game;
+//     const { board, currentTurn } = game;
 
-    // Invalid move checks
-    if (board[index] !== null) return; // cell already filled
-    if (symbol !== currentTurn) return; // not your turn
+//     // Invalid move checks
+//     if (board[index] !== null) return; // cell already filled
+//     if (symbol !== currentTurn) return; // not your turn
 
-    // Make the move
-    board[index] = symbol;
+//     // Make the move
+//     board[index] = symbol;
 
-    // Check for win or draw here if needed
+//     // Check for win or draw here if needed
 
-    // Switch turn
-    const nextTurn = symbol === "X" ? "O" : "X";
+//     // Switch turn
+//     const nextTurn = symbol === "X" ? "O" : "X";
 
-    // Save updated state
-    gameRooms.set(roomId, {
-      board,
-      currentTurn: nextTurn,
-    });
+//     // Save updated state
+//     gameRooms.set(roomId, {
+//       board,
+//       currentTurn: nextTurn,
+//     });
 
-    // Emit updated board and next turn
-    io.to(roomId).emit("move_made", {
-      board,
-      nextTurn,
-    });
-  });
+//     // Emit updated board and next turn
+//     io.to(roomId).emit("move_made", {
+//       board,
+//       nextTurn,
+//     });
+//   });
 
-  // ------------------ RESET GAME ------------------
-  socket.on("reset_game", ({ roomId }) => {
-    const board = Array(9).fill(null);
-    const currentTurn = "X";
+//   // ------------------ RESET GAME ------------------
+//   socket.on("reset_game", ({ roomId }) => {
+//     const board = Array(9).fill(null);
+//     const currentTurn = "X";
 
-    gameRooms.set(roomId, { board, currentTurn });
+//     gameRooms.set(roomId, { board, currentTurn });
 
-    io.to(roomId).emit("move_made", {
-      board,
-      nextTurn: currentTurn,
-    });
-  });
+//     io.to(roomId).emit("move_made", {
+//       board,
+//       nextTurn: currentTurn,
+//     });
+//   });
 
-  // ------------------ DISCONNECT ------------------
-  socket.on("disconnect", () => {
-    console.log("A user disconnected:", socket.id);
+//   // ------------------ DISCONNECT ------------------
+//   socket.on("disconnect", () => {
+//     console.log("A user disconnected:", socket.id);
   
-    // Remove from user map
-    delete userSocketMap[userId];
+//     // Remove from user map
+//     delete userSocketMap[userId];
 
-    // Update online users list
-    io.emit("getOnlineUsers", Object.keys(userSocketMap));
-  });
-});
+//     // Update online users list
+//     io.emit("getOnlineUsers", Object.keys(userSocketMap));
+//   });
+// });
 
-export { io, app, server };
+// export { io, app, server };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// src/hooks/useGameSocketListeners.js
+import { useEffect } from "react";
+import { useAuthStore } from "../store/useAuthStore";
+import { useGameStore } from "../store/useGameStore";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
+const useGameSocketListeners = () => {
+  const { socket } = useAuthStore();
+  const navigate = useNavigate();
+  const {
+    setNotification,
+    setNotificationSenderPlayer,
+    setIsReadyToPlay,
+    isReadyToPlay,
+    sendNotificationResponse
+  } = useGameStore();
+
+  useEffect(() => {
+    if (!socket) return;
+
+    // Incoming game request from another player
+    const handleSendRequest = ({ senderPlayerInfo }) => {
+      console.log("inside handle send request")
+      if(isReadyToPlay){
+        sendNotificationResponse("inMatch")
+      }
+      setNotification(true);
+      setNotificationSenderPlayer(senderPlayerInfo);
+    };
+
+    // Response to game request (accept/reject)
+    const handleResponse = (notificationResponse) => {
+      if (notificationResponse.notificationResponse === "inMatch") {
+        toast.error("PLAYING WITH OTHER PERSON");
+      }
+
+      if (notificationResponse.notificationResponse === "accept") {
+        setIsReadyToPlay(true);
+        navigate("/tictactoe"); // or just "tictactoe"
+      }
+      if (notificationResponse.notificationResponse === "reject") {
+        setIsReadyToPlay(false);
+        toast.error("DON'T WANT TO PLAY WITH YOU");
+      }
+    };
+
+   
+
+    // Register all listeners
+    socket.on("send_request", handleSendRequest);
+    socket.on("response_to_request", handleResponse);
+
+    // Cleanup listeners on unmount
+    return () => {
+      socket.off("send_request", handleSendRequest);
+      socket.off("response_to_request", handleResponse);
+    };
+  }, [socket, navigate, setNotification, setNotificationSenderPlayer, setIsReadyToPlay]);
+};
+
+export default useGameSocketListeners;

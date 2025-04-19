@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "./useAuthStore";
+import toast from "react-hot-toast";
 
 export const useGameStore = create((set, get) => ({
   notification: false,
@@ -15,6 +16,9 @@ export const useGameStore = create((set, get) => ({
       await axiosInstance.get(`/game/game_req/${selectedUser._id}`);
     } catch (error) {
       console.log("error in sendNotification", error);
+      setTimeout(()=>{
+        toast.error(error.response.data.message);
+      },300)
     }
   },
 
