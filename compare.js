@@ -394,6 +394,77 @@
 
 
 
+socket.on("disconnect", () => {
+  console.log("A user disconnected", socket.id);
+  const userId = socket.data.userId;
+
+  if (userId) {
+    delete userSocketMap[userId];
+
+    // Find and handle the game room the user was part of
+    for (const [roomId, gameData] of gameRooms.entries()) {
+      if (gameData.players?.includes(userId)) {
+        io.to(roomId).emit("player_left");
+
+        // Optional: remove the game room after a short delay
+        setTimeout(() => {
+          gameRooms.delete(roomId);
+          console.log(`Game room ${roomId} deleted because player left`);
+        }, 2000);
+
+        break; // user can only be in one room at a time
+      }
+    }
+  }
+
+  io.emit("getOnlineUsers", Object.keys(userSocketMap));
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -120,18 +120,30 @@ io.on("connection", (socket) => {
     io.to(roomId).emit("player_left");
     setTimeout(()=>{
       gameRooms.delete(roomId);
+      console.log(`Game room ${roomId} deleted beccause player left`)
     },2000)
   });
 
   // ✅ DISCONNECT CLEANUP
   socket.on("disconnect", () => {
     console.log("A user disconnected", socket.id);
+    const userId = socket.data.userId;
 
-    // ✅ FIXED: Properly remove user from map using socket-stored userId
-    if (socket.data.userId) {
-      delete userSocketMap[socket.data.userId];
+    if(userId){
+      delete userSocketMap[userId];
+      for (const [roomId,gameData] of gameRooms.entries()){
+        if(gameData.players?.includes(userId)){
+          io.to(roomId).emit("player_left");
+
+          //remove the gameRoom after a short delay bcz it takes time.
+          setTimeout(()=>{
+            gameRooms.delete(roomId);
+            console.log(`Game room ${roomId} deleted beccause player left`)
+          },2000);
+          break; //user can only be in one room at a time
+        }
+      }
     }
-
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
   });
 });
