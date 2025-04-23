@@ -16,7 +16,7 @@ const PORT = process.env.PORT
 app.use(express.json({limit: '10mb' }));
 app.use(cookieParser());
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin:["http://localhost:8080"],
     credentials:true,
 }))
 
@@ -25,8 +25,8 @@ app.use('/api/auth',authRoutes);
 app.use('/api/messages',messageRoutes);
 app.use('/api/game',gameRoutes);
 
-
 server.listen(PORT,()=>{
-    console.log("server is running on port 5001 http://localhost:"+PORT)
+    console.log("server is running on port 5001:"+PORT)
     connectDB();
 })
+

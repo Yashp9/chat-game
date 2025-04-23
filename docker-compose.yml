@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend #tells the docker to build the image using docker file inside ./backend directory.
+    ports:
+      - "5001:5001" # maps host port to container port uses default network driver bridge
+    env_file:
+      - ./backend/.env #loads all the enviroment variable from .env file inside the backend folder.
+    volumes:
+      - ./backend:/app #mount all my loacl backend code into the container (for live updates)
+    restart: always # automatically restart the container if it crashes
+    networks: 
+      - app-network #connects this service to a custom user-defined network for inter-service communicatio like helps in creating the connection between frontend and backend
+  
+  frontend:
+    build: ./frontend #build frontend image from the Dockerfile inside the frontend folder
+    ports:
+      - "8080:80" #host port 8080 -> container port 80 (Nginx serves frontend on port 80)
+    depends_on:
+      - backend #ensures backend starts first (not mandatory, but useful)
+    restart: always #automatically restart the container if it crashes
+    networks:
+      - app-network #same network so frontend can talk to backend by its service name (like 'http://backend:3000')
+
+# defines a shared network for frontend and backend
+networks:
+  app-network:
+    driver: bridge #default network driver for local multi-container setups
