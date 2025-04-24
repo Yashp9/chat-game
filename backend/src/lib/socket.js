@@ -7,7 +7,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:8080"],
   },
 });
 
@@ -30,7 +30,7 @@ io.on("connection", (socket) => {
 
   io.emit("getOnlineUsers", Object.keys(userSocketMap)); // Notify all clients
 
-  // ✅ JOIN GAME ROOM
+  //  JOIN GAME ROOM
   socket.on("join_game_room", (roomId) => {
     socket.join(roomId);
 
@@ -71,7 +71,7 @@ io.on("connection", (socket) => {
     }, 500);
   });
 
-  // ✅ MAKE MOVE
+  //  MAKE MOVE
   socket.on("make_move", ({ roomId, index, symbol, winner }) => {
     const prevState = gameRooms.get(roomId);
     console.log(`inside make_move listener roomId = ${roomId} index = ${index} symbol = ${symbol}`);
@@ -99,7 +99,7 @@ io.on("connection", (socket) => {
     });
   });
 
-  // ✅ RESET GAME
+  // RESET GAME
   socket.on("reset_game", ({ roomId }) => {
     const prevState = gameRooms.get(roomId);
     const board = Array(9).fill(null);
@@ -115,7 +115,7 @@ io.on("connection", (socket) => {
     });
   });
 
-  // ✅ PLAYER LEFT
+  // PLAYER LEFT
   socket.on("player-left-game", (roomId) => {
     io.to(roomId).emit("player_left");
     setTimeout(()=>{
@@ -124,7 +124,7 @@ io.on("connection", (socket) => {
     },2000)
   });
 
-  // ✅ DISCONNECT CLEANUP
+  // DISCONNECT CLEANUP
   socket.on("disconnect", () => {
     console.log("A user disconnected", socket.id);
     const userId = socket.data.userId;

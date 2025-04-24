@@ -5,6 +5,7 @@ import AvatarImage from "../assets/images/avatar.png";
 import { Link } from "react-router-dom";
 import { useGameStore } from "../store/useGameStore";
 import toast from "react-hot-toast";
+import { GiTicTacToe } from "react-icons/gi";
 
 const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
@@ -38,7 +39,7 @@ const ChatHeader = () => {
           </div>
         </div>
         <button className="btn btn-soft btn-accent" onClick={handlePlay}>
-          Play
+          Play Tic-Tac-Toe
         </button>
 
         {/* Close button */}
