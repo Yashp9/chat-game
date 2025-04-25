@@ -12,6 +12,7 @@ import gameRoutes from "./routes/game.route.js"
 
 dotenv.config()
 const PORT = process.env.PORT
+console.log("PORT =",PORT);
 
 app.use(express.json({limit: '10mb' }));
 app.use(cookieParser());
