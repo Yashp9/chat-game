@@ -1,5 +1,5 @@
 // src/hooks/useGameSocketListeners.js
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { useGameStore } from "../store/useGameStore";
 import { useNavigate } from "react-router-dom";
@@ -19,61 +19,45 @@ const useGameSocketListeners = () => {
     "Player skipped the boss fight—you."
   ];
 
-
-
-  
   const { socket } = useAuthStore();
   const navigate = useNavigate();
   const {
     setNotification,
     setNotificationSenderPlayer,
-    setIsReadyToPlay,
-    isReadyToPlay,
-    sendNotificationResponse
+    setIsReadyToPlay
   } = useGameStore();
+
+  // Stable handler for "send_request"
+  const handleSendRequest = useCallback(({ senderPlayerInfo }) => {
+    console.log("inside handle send request");
+    setNotification(true);
+    setNotificationSenderPlayer(senderPlayerInfo);
+  }, [setNotification, setNotificationSenderPlayer]);
+
+  // Stable handler for "response_to_request"
+  const handleResponse = useCallback((notificationResponse) => {
+    if (notificationResponse.notificationResponse === "accept") {
+      setIsReadyToPlay(true);
+      navigate("/tictactoe");
+    }
+    if (notificationResponse.notificationResponse === "reject") {
+      const randomMessage = rejectionMessages[Math.floor(Math.random() * rejectionMessages.length)];
+      setIsReadyToPlay(false);
+      toast.error(randomMessage);
+    }
+  }, [navigate, setIsReadyToPlay]);
 
   useEffect(() => {
     if (!socket) return;
 
-    // Incoming game request from another player
-    const handleSendRequest = ({ senderPlayerInfo }) => {
-      console.log("inside handle send request")
-      // if(isReadyToPlay){
-      //   sendNotificationResponse("inMatch")
-      // }
-      setNotification(true);
-      setNotificationSenderPlayer(senderPlayerInfo);
-    };
-
-    // Response to game request (accept/reject)
-    const handleResponse = (notificationResponse) => {
-      // if (notificationResponse.notificationResponse === "inMatch") {
-      //   toast.error("PLAYING WITH OTHER PERSON");
-      // }
-
-      if (notificationResponse.notificationResponse === "accept") {
-        setIsReadyToPlay(true);
-        navigate("/tictactoe"); // or just "tictactoe"
-      }
-      if (notificationResponse.notificationResponse === "reject") {
-        const randomMessage = rejectionMessages[Math.floor(Math.random() * rejectionMessages.length)];
-        setIsReadyToPlay(false);
-        toast.error(randomMessage);
-      }
-    };
-
-   
-
-    // Register all listeners
     socket.on("send_request", handleSendRequest);
     socket.on("response_to_request", handleResponse);
 
-    // Cleanup listeners on unmount
     return () => {
       socket.off("send_request", handleSendRequest);
       socket.off("response_to_request", handleResponse);
     };
-  }, [socket, navigate, setNotification, setNotificationSenderPlayer, setIsReadyToPlay]);
+  }, [socket, handleSendRequest, handleResponse]);
 };
 
 export default useGameSocketListeners;

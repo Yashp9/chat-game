@@ -4,6 +4,7 @@ import { useAuthStore } from "../store/useAuthStore";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import { Users } from "lucide-react";
 import AvatarImage from "../assets/images/avatar.png";
+import { useGameStore } from "../store/useGameStore";
 import { useNavigate } from "react-router-dom";
 import useGameSocketListeners from "../hooks/useGameSocketListener";
 import toast from "react-hot-toast";
@@ -11,50 +12,53 @@ import toast from "react-hot-toast";
 const Sidebar = () => {
   const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
   const { onlineUsers, socket } = useAuthStore();
+  const { setNotificationSenderPlayer, setNotification, setIsReadyToPlay, isReadyToPlay } = useGameStore();
   const navigate = useNavigate();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
 
-  // Fetch users on component mount
+  // Fetch users when component mounts
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         await getUsers();
       } catch (error) {
-        toast.error("Failed to fetch users");
         console.error("Error fetching users:", error);
+        toast.error("Failed to fetch users");
       }
     };
+
     fetchUsers();
-  }, [getUsers]);
+  }, [getUsers, onlineUsers]);
 
   // Initialize game socket listeners
   useGameSocketListeners();
 
-  // Memoize filtered users
+  // Filter users based on online status
   const filteredUsers = useMemo(() => {
     return showOnlineOnly
       ? users.filter((user) => onlineUsers.includes(user._id))
       : users;
   }, [showOnlineOnly, users, onlineUsers]);
 
-  // Memoize user selection handler
-  const handleUserSelect = useCallback(
-    (user) => {
-      setSelectedUser(user);
-    },
-    [setSelectedUser]
-  );
+  // Handle selecting a user
+  const handleUserSelect = useCallback((user) => {
+    setSelectedUser(user);
+  }, [setSelectedUser]);
 
-  // Clean up socket listeners
+  // Cleanup example socket listener (optional if needed later)
   useEffect(() => {
     const handleSocketEvent = (data) => {
       console.log("Socket event received:", data);
     };
 
-    socket.on("some_event", handleSocketEvent);
+    if (socket) {
+      socket.on("some_event", handleSocketEvent);
+    }
 
     return () => {
-      socket.off("some_event", handleSocketEvent);
+      if (socket) {
+        socket.off("some_event", handleSocketEvent);
+      }
     };
   }, [socket]);
 
@@ -62,11 +66,13 @@ const Sidebar = () => {
 
   return (
     <aside className="h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
+      {/* Header Section */}
       <div className="border-b border-base-300 w-full p-5">
         <div className="flex items-center gap-2">
           <Users className="size-6" />
           <span className="font-medium hidden lg:block">Contacts</span>
         </div>
+
         <div className="mt-3 hidden lg:flex items-center gap-2">
           <label className="cursor-pointer flex items-center gap-2">
             <input
@@ -83,35 +89,29 @@ const Sidebar = () => {
         </div>
       </div>
 
+      {/* User List Section */}
       <div className="overflow-y-auto w-full py-3">
         {filteredUsers.map((user) => (
           <button
             key={user._id}
             onClick={() => handleUserSelect(user)}
-            className={`
-              w-full p-3 flex items-center gap-3
-              hover:bg-base-300 transition-colors
-              ${
-                selectedUser?._id === user._id
-                  ? "bg-base-300 ring-1 ring-base-300"
-                  : ""
-              }
-            `}
+            className={`w-full p-3 flex items-center gap-3 hover:bg-base-300 transition-colors ${
+              selectedUser?._id === user._id ? "bg-base-300 ring-1 ring-base-300" : ""
+            }`}
           >
+            {/* User Avatar */}
             <div className="relative mx-auto lg:mx-0">
               <img
                 src={user.profilePic || AvatarImage}
-                alt={user.name}
+                alt={user.fullName}
                 className="size-12 object-cover rounded-full"
               />
               {onlineUsers.includes(user._id) && (
-                <span
-                  className="absolute bottom-0 right-0 size-3 bg-green-500 
-                  rounded-full ring-2 ring-zinc-900"
-                />
+                <span className="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full ring-2 ring-zinc-900" />
               )}
             </div>
 
+            {/* User Name */}
             <div className="hidden lg:block text-left min-w-0">
               <div className="font-medium truncate">{user.fullName}</div>
               <div className="text-sm text-zinc-400">
@@ -121,8 +121,11 @@ const Sidebar = () => {
           </button>
         ))}
 
+        {/* No users */}
         {filteredUsers.length === 0 && (
-          <div className="text-center text-zinc-500 py-4">No online users</div>
+          <div className="text-center text-zinc-500 py-4">
+            No online users
+          </div>
         )}
       </div>
     </aside>

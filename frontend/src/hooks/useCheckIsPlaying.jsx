@@ -10,25 +10,26 @@ const useCheckIsPlaying = () => {
     isReadyToPlay: isInGame,
     setIsReadyToPlay: setIsInGame,
   } = useGameStore();
-  const {socket} = useAuthStore();
-  const {roomId} = usePlayStore();
+  const { socket } = useAuthStore();
+  const { roomId } = usePlayStore();
 
   useEffect(() => {
-    // Use a delay to allow React Router to complete navigation
     const timeout = setTimeout(() => {
       if (isInGame && location.pathname !== "/tictactoe") {
         console.log("User left the game page");
 
-        // Notify server
-        socket.emit("player-left-game",roomId);
+        // Notify server safely
+        if (socket && roomId) {
+          socket.emit("player-left-game", roomId);
+        }
 
         // Update Zustand
         setIsInGame(false);
       }
-    }, 500); // 100ms delay is usually enough
+    }, 500); // 500ms delay to ensure navigation is complete
 
     return () => clearTimeout(timeout);
-  }, [location, isInGame, setIsInGame]);
+  }, [location.pathname, isInGame, socket, roomId, setIsInGame]);
 };
 
 export default useCheckIsPlaying;
