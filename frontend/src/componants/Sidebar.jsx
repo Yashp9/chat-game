@@ -4,50 +4,59 @@ import { useAuthStore } from "../store/useAuthStore";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import { Users } from "lucide-react";
 import AvatarImage from "../assets/images/avatar.png";
-import { useGameStore } from "../store/useGameStore";
+import { useNavigate } from "react-router-dom";
+import useGameSocketListeners from "../hooks/useGameSocketListener";
+import toast from "react-hot-toast";
 
 const Sidebar = () => {
-  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } =
-    useChatStore();
-
+  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
   const { onlineUsers, socket } = useAuthStore();
+  const navigate = useNavigate();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
 
-  // Fetch users on mount
+  // Fetch users on component mount
   useEffect(() => {
-    getUsers();
+    const fetchUsers = async () => {
+      try {
+        await getUsers();
+      } catch (error) {
+        toast.error("Failed to fetch users");
+        console.error("Error fetching users:", error);
+      }
+    };
+    fetchUsers();
   }, [getUsers]);
 
-  // Listen for socket events
-  useEffect(() => {
-    const handleResponse = (notificationResponse) => {
-      console.log("get response__to__request", notificationResponse);
-    };
+  // Initialize game socket listeners
+  useGameSocketListeners();
 
-    socket.on("response_to_request", handleResponse);
-
-    return () => {
-      socket.off("response_to_request", handleResponse);
-    };
-  }, [socket]);
-
-  // Fetch notifications when onlineUsers change
-  
-
-  // Memoize filtered users to avoid recalculating on every render
+  // Memoize filtered users
   const filteredUsers = useMemo(() => {
     return showOnlineOnly
       ? users.filter((user) => onlineUsers.includes(user._id))
       : users;
   }, [showOnlineOnly, users, onlineUsers]);
 
-  // Memoize the user selection handler
+  // Memoize user selection handler
   const handleUserSelect = useCallback(
     (user) => {
       setSelectedUser(user);
     },
     [setSelectedUser]
   );
+
+  // Clean up socket listeners
+  useEffect(() => {
+    const handleSocketEvent = (data) => {
+      console.log("Socket event received:", data);
+    };
+
+    socket.on("some_event", handleSocketEvent);
+
+    return () => {
+      socket.off("some_event", handleSocketEvent);
+    };
+  }, [socket]);
 
   if (isUsersLoading) return <SidebarSkeleton />;
 
@@ -58,7 +67,6 @@ const Sidebar = () => {
           <Users className="size-6" />
           <span className="font-medium hidden lg:block">Contacts</span>
         </div>
-        {/* Online filter toggle */}
         <div className="mt-3 hidden lg:flex items-center gap-2">
           <label className="cursor-pointer flex items-center gap-2">
             <input
@@ -104,7 +112,6 @@ const Sidebar = () => {
               )}
             </div>
 
-            {/* User info - only visible on larger screens */}
             <div className="hidden lg:block text-left min-w-0">
               <div className="font-medium truncate">{user.fullName}</div>
               <div className="text-sm text-zinc-400">
