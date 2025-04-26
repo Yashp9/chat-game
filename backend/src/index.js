@@ -17,7 +17,7 @@ console.log("PORT =",PORT);
 app.use(express.json({limit: '10mb' }));
 app.use(cookieParser());
 app.use(cors({
-    origin:["http://localhost:8080"],
+    origin:["http://51.20.251.120:8080"],
     credentials:true,
 }))
 
