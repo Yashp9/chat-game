@@ -9,6 +9,7 @@ services:
       - ./backend/.env #loads all the enviroment variable from .env file inside the backend folder.
     volumes:
       - ./backend:/app #mount all my loacl backend code into the container (for live updates)
+      - /app/node_modules # <-- Prevents local volume from overwriting container's node_modules
     restart: always # automatically restart the container if it crashes
     networks: 
       - app-network #connects this service to a custom user-defined network for inter-service communicatio like helps in creating the connection between frontend and backend
