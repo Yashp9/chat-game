@@ -1,0 +1,32 @@
+
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main    # or master, whichever branch you use
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install SSH Client
+      run: sudo apt-get install -y openssh-client
+
+    - name: Decode SSH Key
+      run: |
+        echo "${{ secrets.SSH_KEY }}" | base64 -d > private_key.pem
+        chmod 600 private_key.pem
+
+    - name: SSH and Deploy
+      run: |
+        ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.USERNAME }}@${{ secrets.HOST }} << 'EOF'
+          cd /home/ubuntu/chat-game
+          git pull origin main
+          docker-compose down
+          docker-compose up -d --build
+        EOF
