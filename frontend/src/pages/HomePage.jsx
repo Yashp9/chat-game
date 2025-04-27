@@ -6,6 +6,7 @@ import ChatContainer from "../componants/ChatContainer";
 
 const HomePage = () => {
   const { selectedUser } = useChatStore();
+  console.log("CI/CD PIPELINE WORKING PERFECTLY FINE");
 
   return (
     <div className="h-screen bg-base-200">
