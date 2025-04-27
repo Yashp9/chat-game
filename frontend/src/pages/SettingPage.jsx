@@ -92,7 +92,6 @@ const ChatPreviewBox = ({ id, onCheck ,bg}) => {
 
 const SettingsPage = () => {
   const { theme, setTheme,setBgImage ,bgImage} = useThemeStore();
-  console.log("added message to check the ci/cd pipeline correctly");
 
   const handleBgImage = (value) => {
     setBgImage(value);
