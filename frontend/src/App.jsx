@@ -26,6 +26,9 @@ const App = () => {
     checkAuth();
   }, [checkAuth,notification]);
 
+  //checking mode ;
+  console.log("running on ",import.meta.env.MODE , "mode"); 
+
   if (isCheckingAuth && !authUser) {
     return (
       <div className="flex item-center justify-center h-screen">
