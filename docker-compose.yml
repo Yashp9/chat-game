@@ -17,7 +17,7 @@ services:
   frontend:
     build: ./frontend #build frontend image from the Dockerfile inside the frontend folder
     ports:
-      - "8080:80" #host port 8080 -> container port 80 (Nginx serves frontend on port 80)
+      - "80:80" #host port 80 -> container port 80 (Nginx serves frontend on port 80)
     depends_on:
       - backend #ensures backend starts first (not mandatory, but useful)
     restart: always #automatically restart the container if it crashes

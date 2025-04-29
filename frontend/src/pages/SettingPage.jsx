@@ -1,10 +1,10 @@
 import { useThemeStore } from "../store/useThemeStore";
 import { Moon, Sun } from "lucide-react";
 import { motion } from "framer-motion";
-import ChatBg_1 from "../assets/images/bgImg/ester.jpg";
-import ChatBg_2 from "../assets/images/bgImg/pooh.jpg";
-import ChatBg_3 from "../assets/images/bgImg/bicycle.jpg";
-import ChatBg_4 from "../assets/images/bgImg/mushroom.jpg";
+import ChatBg_1 from "../assets/images/bgImg/webp/ester.webp";
+import ChatBg_2 from "../assets/images/bgImg/webp/pooh.webp";
+import ChatBg_3 from "../assets/images/bgImg/webp/bicycle.webp";
+import ChatBg_4 from "../assets/images/bgImg/webp/mushroom.webp";
 
 const PREVIEW_MESSAGES = [
   { id: 1, content: "Hey! How's it going?", isSent: false },

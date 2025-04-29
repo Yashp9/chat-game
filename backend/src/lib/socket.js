@@ -5,6 +5,12 @@ import express from "express";
 const app = express();
 const server = http.createServer(app);
 
+//for development
+// "http://localhost:5173"
+
+//for production
+// http://51.20.251.120:8080
+
 const io = new Server(server, {
   cors: {
     origin: ["http://51.20.251.120:8080"],

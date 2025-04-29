@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Camera, Mail, User } from "lucide-react";
 import AvatarImage from "../assets/images/avatar.png"
-import profileBg from "../assets/images/3d.jpg"
+import profileBg from "../assets/images/bgImg/webp/3d.webp"
 
 
 const ProfilePage = () => {
