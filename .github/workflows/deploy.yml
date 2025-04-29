@@ -1,10 +1,9 @@
-
 name: Deploy to EC2
 
 on:
   push:
     branches:
-      - main    # or master, whichever branch you use
+      - main  # Change if using a different branch
 
 jobs:
   deploy:
@@ -27,6 +26,11 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.USERNAME }}@${{ secrets.HOST }} << 'EOF'
           cd /home/ubuntu/chat-game
           git pull origin main
-          docker-compose down
-          docker-compose up -d --build
+
+          # Optional: Clean up Docker system to free space
+          sudo docker system prune -af
+
+          # Restart containers
+          sudo docker-compose down
+          sudo docker-compose up -d --build
         EOF
