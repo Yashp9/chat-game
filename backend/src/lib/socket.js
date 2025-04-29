@@ -1,6 +1,8 @@
 import { Server } from "socket.io";
 import http from "http";
+import dotenv from "dotenv"
 import express from "express";
+dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
@@ -11,9 +13,11 @@ const server = http.createServer(app);
 //for production
 // http://51.20.251.120:8080
 
+const url = process.env.NODE_ENV === "development" ?  "http://localhost:5173" : "http://51.20.251.120:8080"
+
 const io = new Server(server, {
   cors: {
-    origin: ["http://51.20.251.120:8080"],
+    origin: [url],
   },
 });
 

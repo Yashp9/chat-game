@@ -7,6 +7,7 @@ import messageRoutes from "./routes/message.route.js";
 import cors from "cors";
 import { app,server } from './lib/socket.js';
 import gameRoutes from "./routes/game.route.js"
+import limiter from './middleware/rateLimiter..js';
 import './schedular.js'
 
 
@@ -20,10 +21,13 @@ console.log("PORT =",PORT);
 //for development
 // http://localhost:5173
 
+const url = process.env.NODE_ENV === "development" ?  "http://localhost:5173" : "http://51.20.251.120:8080"
+
+app.use(limiter);
 app.use(express.json({limit: '10mb' }));
 app.use(cookieParser());
 app.use(cors({
-    origin:["http://51.20.251.120:8080"],
+    origin:[url],
     credentials:true,
 }))
 
