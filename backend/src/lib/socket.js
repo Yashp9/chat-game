@@ -11,9 +11,9 @@ const server = http.createServer(app);
 // "http://localhost:5173"
 
 //for production
-// http://51.20.251.120:8080
+// http://13.60.73.152:8080
 
-const url = process.env.NODE_ENV === "development" ?  "http://localhost:5173" : "http://51.20.251.120:8080"
+const url = process.env.NODE_ENV === "development" ?  "http://localhost:5173" : "http://13.60.73.152:8080"
 
 const io = new Server(server, {
   cors: {
