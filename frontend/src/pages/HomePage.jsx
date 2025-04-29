@@ -6,6 +6,8 @@ import ChatContainer from "../componants/ChatContainer";
 
 const HomePage = () => {
   const { selectedUser } = useChatStore();
+   //checking mode ;
+   console.log("running on ",import.meta.env.MODE , "mode"); 
 
   return (
     <div className="h-screen bg-base-200">
