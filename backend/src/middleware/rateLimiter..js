@@ -1,7 +1,7 @@
 import rateLimit from "express-rate-limit";
 
 //limit each IP to 100 request per 15 minutes.
-const limiter = rateLimit({
+export const limiter = rateLimit({
     windowMs:15*60*1000, //15 minutes
     max:100,
     message:{
@@ -12,4 +12,10 @@ const limiter = rateLimit({
     legacyHeaders:false, //Disable 'X-rateLimit-* headers
 });
 
-export  default limiter;
+export const shortBurstLimiter = rateLimit({
+    windowMs:5*1000, //5seconds
+    max:10,
+    message:'Too many rapid request. Slow down!',
+    standardHeaders:true,
+    legacyHeaders:false,
+})
