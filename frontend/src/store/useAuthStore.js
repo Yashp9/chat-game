@@ -3,8 +3,9 @@ import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
-const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:5001" : "/"
-
+const BASE_URL = import.meta.env.MODE === "development"
+  ? "http://localhost:5001"
+  : window.location.origin;
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
@@ -91,12 +92,16 @@ export const useAuthStore = create((set, get) => ({
     const { authUser } = get();
     if (!authUser || get().socket?.connected) return;
 
+    // const socket = io(BASE_URL, {
+    //   //this query will send to the backend and in backend we access it.
+    //   transports:["websockets"],
+    //   query: {
+    //     userId: authUser._id,
+    //   },
+    // });
     const socket = io(BASE_URL, {
-      //this query will send to the backend and in backend we access it.
-      transports:["websockets"],
-      query: {
-        userId: authUser._id,
-      },
+      transports: ["websocket"],
+      query: { userId: authUser._id }, //this query will send to the backend and in backend we access it.
     });
 
     socket.connect();
