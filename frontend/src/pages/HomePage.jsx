@@ -2,12 +2,15 @@ import { useChatStore } from "../store/useChatStore";
 import Sidebar from "../componants/Sidebar";
 import NoChatSelected from "../componants/NoChatSelected";
 import ChatContainer from "../componants/ChatContainer";
+import { useEffect } from "react";
 
 
 const HomePage = () => {
   const { selectedUser } = useChatStore();
+  useEffect(()=>{
+    console.log("running on ",import.meta.env.MODE , "modeee"); 
+  },[])
    //checking mode ;
-   console.log("running on ",import.meta.env.MODE , "modeee"); 
 
   return (
     <div className="h-screen bg-base-200">

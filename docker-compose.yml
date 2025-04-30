@@ -3,8 +3,8 @@ version: "3.8"
 services:
   backend:
     build: ./backend #tells the docker to build the image using docker file inside ./backend directory.
-    ports:
-      - "5001:5001" # maps host port to container port uses default network driver bridge
+    # ports:
+      # - "5001:5001" # maps host port to container port uses default network driver bridge
     env_file:
       - ./backend/.env #loads all the enviroment variable from .env file inside the backend folder.
     volumes:
