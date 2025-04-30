@@ -14,7 +14,7 @@ export const limiter = rateLimit({
 
 export const shortBurstLimiter = rateLimit({
     windowMs:5*1000, //5seconds
-    max:10,
+    max:20,
     message:'Too many rapid request. Slow down!',
     standardHeaders:true,
     legacyHeaders:false,

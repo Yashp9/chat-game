@@ -24,7 +24,7 @@ const App = () => {
   useCheckIsPlaying()
   useEffect(() => {
     checkAuth();
-  }, [checkAuth,notification]);
+  }, [checkAuth]);
 
  
 
