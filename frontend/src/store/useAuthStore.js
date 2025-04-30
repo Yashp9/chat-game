@@ -3,7 +3,7 @@ import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
-const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:5001" : "http://13.60.73.152:5001"
+const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:5001" : "/"
 
 
 export const useAuthStore = create((set, get) => ({
@@ -93,6 +93,7 @@ export const useAuthStore = create((set, get) => ({
 
     const socket = io(BASE_URL, {
       //this query will send to the backend and in backend we access it.
+      transports:["websockets"],
       query: {
         userId: authUser._id,
       },
