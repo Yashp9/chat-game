@@ -43,7 +43,7 @@ const NoChatSelected = () => {
 
         {/* Text */}
         <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600">Welcome to Monk-Chat!</h2>
-        <p className="text-base text-emerald-800/70">Dive into a conversation and let the chat begin – your next great discussion is just a click away!</p>
+
       </div>
 
       {/* Custom Animations */}

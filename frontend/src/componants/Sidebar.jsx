@@ -28,7 +28,12 @@ const Sidebar = () => {
     };
 
     fetchUsers();
-  }, [getUsers, onlineUsers]);
+  }, [getUsers]);
+  
+  useEffect(()=>{
+    console.log("online users ====",onlineUsers);
+  },[onlineUsers]);
+
 
   // Initialize game socket listeners
   useGameSocketListeners();
