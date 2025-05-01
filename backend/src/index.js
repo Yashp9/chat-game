@@ -21,7 +21,7 @@ console.log("PORT =",PORT);
 //for development
 // http://localhost:5173
 
-const url = process.env.NODE_ENV === "development" ?  "http://localhost:5173" : "http://13.60.73.152:8080"
+const url = process.env.NODE_ENV === "development" ?  "http://localhost:5173" : "http://13.60.73.152"
 
 app.use(limiter);
 app.use(express.json({limit: '10mb' }));
