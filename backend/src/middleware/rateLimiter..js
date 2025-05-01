@@ -12,10 +12,4 @@ export const limiter = rateLimit({
     legacyHeaders:false, //Disable 'X-rateLimit-* headers
 });
 
-export const shortBurstLimiter = rateLimit({
-    windowMs:5*1000, //5seconds
-    max:20,
-    message:'Too many rapid request. Slow down!',
-    standardHeaders:true,
-    legacyHeaders:false,
-})
+
