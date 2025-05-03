@@ -9,6 +9,8 @@ import { app,server } from './lib/socket.js';
 import gameRoutes from "./routes/game.route.js"
 import { limiter} from './middleware/rateLimiter..js';
 import './schedular.js'
+import xss from "xss-clean";
+import helmet from "helmet";
 
 
 dotenv.config()
@@ -23,6 +25,8 @@ console.log("PORT =",PORT);
 
 const url = process.env.NODE_ENV === "development" ?  "http://localhost:5173" : "http://13.60.73.152"
 
+app.use(xss());
+app.use(helmet());
 app.use(limiter);
 app.use(express.json({limit: '10mb' }));
 app.use(cookieParser());
